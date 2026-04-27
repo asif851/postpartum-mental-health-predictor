@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Postpartum Mental Health Screening</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .main-card {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+            overflow: hidden;
+        }
+
+        .form-section {
+            padding: 30px;
+        }
+
+        .form-title {
+            font-size: 1.5rem;
+            color: #333;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #667eea;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 500;
+            color: #555;
+            margin-bottom: 8px;
+        }
+
+        .form-group select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 14px;
+            font-family: inherit;
+            transition: all 0.3s;
+        }
+
+        .form-group select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .predict-btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+            margin-top: 20px;
+        }
+
+        .predict-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .results-section {
+            background: #f8f9fa;
+            padding: 30px;
+            border-top: 1px solid #e0e0e0;
+        }
+
+        .results-title {
+            font-size: 1.5rem;
+            color: #333;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .results-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+        }
+
+        .result-card {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .result-card h3 {
+            font-size: 1.3rem;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .result-card.anxiety h3 {
+            color: #667eea;
+        }
+
+        .result-card.suicide h3 {
+            color: #e74c3c;
+        }
+
+        .prediction-badge {
+            text-align: center;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+
+        .prediction-badge.anxiety-yes {
+            background: #fee;
+            color: #e74c3c;
+        }
+
+        .prediction-badge.anxiety-no {
+            background: #e8f5e9;
+            color: #4caf50;
+        }
+
+        .prediction-badge.suicide-yes {
+            background: #fee;
+            color: #e74c3c;
+        }
+
+        .prediction-badge.suicide-no {
+            background: #e8f5e9;
+            color: #4caf50;
+        }
+
+        .prediction-badge.suicide-not-interested {
+            background: #fff3e0;
+            color: #ff9800;
+        }
+
+        .confidence-bar {
+            margin: 15px 0;
+        }
+
+        .confidence-label {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 5px;
+            font-size: 14px;
+        }
+
+        .confidence-bar-bg {
+            background: #e0e0e0;
+            height: 8px;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .confidence-bar-fill {
+            height: 100%;
+            border-radius: 4px;
+            transition: width 0.5s ease;
+        }
+
+        .confidence-bar-fill.anxiety {
+            background: linear-gradient(90deg, #667eea, #764ba2);
+        }
+
+        .confidence-bar-fill.suicide {
+            background: linear-gradient(90deg, #e74c3c, #c0392b);
+        }
+
+        .disclaimer {
+            margin-top: 20px;
+            padding: 15px;
+            background: #fff3cd;
+            border-radius: 10px;
+            border-left: 4px solid #ffc107;
+            font-size: 12px;
+            color: #856404;
+        }
+
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @media (max-width: 768px) {
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .results-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .header h1 {
+                font-size: 1.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="spinner"></div>
+    </div>
+
+    <div class="container">
+        <div class="header">
+            <h1> Postpartum Mental Health Screening</h1>
+            <p>Confidential screening for postpartum depression and anxiety</p>
+        </div>
+
+        <div class="main-card">
+            <div class="form-section">
+                <h2 class="form-title">Patient Information</h2>
+                <form id="screeningForm">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label>Age</label>
+                            <select name="age" id="age">
+                                <option value="35-40">35-40</option>
+                                <option value="40-45">40-45</option>
+                                <option value="30-35">30-35</option>
+                                <option value="45-50">45-50</option>
+                                <option value="25-30">25-30</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Feeling sad or Tearful</label>
+                            <select name="sad" id="sad">
+                                <option value="Yes">Yes</option>
+                                <option value="No">No</option>
+                                <option value="Sometimes">Sometimes</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Irritable towards baby & partner</label>
+                            <select name="irritable" id="irritable">
+                                <option value="Yes">Yes</option>
+                                <option value="No">No</option>
+                                <option value="Sometimes">Sometimes</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Trouble sleeping at night</label>
+                            <select name="sleep" id="sleep">
+                                <option value="Two or more days a week">Two or more days a week</option>
+                                <option value="No">No</option>
+                                <option value="Yes">Yes</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Problems concentrating or making decision</label>
+                            <select name="concentration" id="concentration">
+                                <option value="Yes">Yes</option>
+                                <option value="No">No</option>
+                                <option value="Often">Often</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Overeating or loss of appetite</label>
+                            <select name="appetite" id="appetite">
+                                <option value="Yes">Yes</option>
+                                <option value="No">No</option>
+                                <option value="Not at all">Not at all</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Feeling of guilt</label>
+                            <select name="guilt" id="guilt">
+                                <option value="No">No</option>
+                                <option value="Yes">Yes</option>
+                                <option value="Maybe">Maybe</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Problems of bonding with baby</label>
+                            <select name="bonding" id="bonding">
+                                <option value="Yes">Yes</option>
+                                <option value="No">No</option>
+                                <option value="Sometimes">Sometimes</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="predict-btn"> Get Assessment</button>
+                </form>
+            </div>
+
+            <div class="results-section" id="resultsSection" style="display: none;">
+                <h2 class="results-title">Assessment Results</h2>
+                <div class="results-grid">
+                    <div class="result-card anxiety" id="anxietyResult">
+                        <h3> Feeling Anxious</h3>
+                        <div id="anxietyContent"></div>
+                    </div>
+
+                    <div class="result-card suicide" id="suicideResult">
+                        <h3> Suicide Attempt</h3>
+                        <div id="suicideContent"></div>
+                    </div>
+                </div>
+                
+                <div class="disclaimer">
+                    <strong> Disclaimer:</strong> This is a screening tool only and not a substitute for professional medical advice. 
+                    If you're experiencing thoughts of harming yourself or others, please seek immediate help from a mental health professional.
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const form = document.getElementById('screeningForm');
+        const resultsSection = document.getElementById('resultsSection');
+        const loadingOverlay = document.getElementById('loadingOverlay');
+        const anxietyContent = document.getElementById('anxietyContent');
+        const suicideContent = document.getElementById('suicideContent');
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            loadingOverlay.style.display = 'flex';
+            resultsSection.style.display = 'none';
+            
+            const formData = new FormData(form);
+            
+            try {
+                const response = await fetch('/predict', {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    displayResults(data);
+                    resultsSection.style.display = 'block';
+                } else {
+                    alert('Error: ' + data.error);
+                }
+            } catch (error) {
+                alert('Error connecting to server: ' + error.message);
+            } finally {
+                loadingOverlay.style.display = 'none';
+            }
+        });
+        
+        function displayResults(data) {
+            // Anxiety Results - Using original label "Feeling anxious"
+            const anxiety = data.anxiety;
+            const anxietyPercent = (anxiety.probability * 100).toFixed(1);
+            const anxietyPercentNo = (anxiety.probability_no * 100).toFixed(1);
+            
+            const anxietyBadgeClass = anxiety.prediction === 'Yes' ? 'anxiety-yes' : 'anxiety-no';
+            
+            anxietyContent.innerHTML = `
+                <div class="prediction-badge ${anxietyBadgeClass}">
+                    ${anxiety.prediction}
+                </div>
+                <div class="confidence-bar">
+                    <div class="confidence-label">
+                        <span>No</span>
+                        <span>${anxietyPercentNo}%</span>
+                    </div>
+                    <div class="confidence-bar-bg">
+                        <div class="confidence-bar-fill anxiety" style="width: ${anxietyPercentNo}%"></div>
+                    </div>
+                </div>
+                <div class="confidence-bar">
+                    <div class="confidence-label">
+                        <span>Yes</span>
+                        <span>${anxietyPercent}%</span>
+                    </div>
+                    <div class="confidence-bar-bg">
+                        <div class="confidence-bar-fill anxiety" style="width: ${anxietyPercent}%"></div>
+                    </div>
+                </div>
+            `;
+            
+            // Suicide Results - Using original label "Suicide attempt"
+            const suicide = data.suicide;
+            const probNo = (suicide.probabilities['No'] * 100).toFixed(1);
+            const probYes = (suicide.probabilities['Yes'] * 100).toFixed(1);
+            const probNot = (suicide.probabilities['Not interested to say'] * 100).toFixed(1);
+            
+            let suicideBadgeClass = '';
+            if (suicide.prediction === 'Yes') {
+                suicideBadgeClass = 'suicide-yes';
+            } else if (suicide.prediction === 'No') {
+                suicideBadgeClass = 'suicide-no';
+            } else {
+                suicideBadgeClass = 'suicide-not-interested';
+            }
+            
+            suicideContent.innerHTML = `
+                <div class="prediction-badge ${suicideBadgeClass}">
+                    ${suicide.prediction}
+                </div>
+                <div class="confidence-bar">
+                    <div class="confidence-label">
+                        <span>No</span>
+                        <span>${probNo}%</span>
+                    </div>
+                    <div class="confidence-bar-bg">
+                        <div class="confidence-bar-fill suicide" style="width: ${probNo}%"></div>
+                    </div>
+                </div>
+                <div class="confidence-bar">
+                    <div class="confidence-label">
+                        <span>Yes</span>
+                        <span>${probYes}%</span>
+                    </div>
+                    <div class="confidence-bar-bg">
+                        <div class="confidence-bar-fill suicide" style="width: ${probYes}%"></div>
+                    </div>
+                </div>
+                <div class="confidence-bar">
+                    <div class="confidence-label">
+                        <span>Not interested to say</span>
+                        <span>${probNot}%</span>
+                    </div>
+                    <div class="confidence-bar-bg">
+                        <div class="confidence-bar-fill suicide" style="width: ${probNot}%"></div>
+                    </div>
+                </div>
+            `;
+            
+            resultsSection.scrollIntoView({ behavior: 'smooth' });
+        }
+    </script>
+</body>
+</html>
